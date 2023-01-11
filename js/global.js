@@ -239,11 +239,11 @@ async function regist() {
                 .then((data) => {
                     console.log(data);
                     if(data.includes('The Email already exist')){
-                        console.log('El email ya existe')
                         message('exists.email', 'keepOpen')
                     } else if(data.includes('The user already exist')){
-                        console.log('usuario existente')
                         message('exists.user', 'keepOpen')
+                    } else {
+                        message('error.regist')
                     }
                 })
         }
@@ -258,6 +258,7 @@ document.querySelector('#createBtn').onclick = (e) => {
 
 let userData
 
+// --> Obtiene los datos del usuario logueado
 async function getUser(){
     console.log(sessionStorage.getItem('chacrukToken'));    
 
@@ -310,13 +311,17 @@ async function getUser(){
         }        
     });
 }
+// <--
 
+// --> Mensaje de login incorrecto
 function invalidLogin(){
     loginMsj.innerHTML = 'Usuario y/o contraseña incorrectos.'
     loginMsj.style.display = 'block'
     loginMsj.style.color = 'red'
 }
+// <--
 
+// --> Funcion que administra los mensajes de alerta
 function message(type, close){
     console.log('msj Popup');
     msj.style.display = 'flex'
@@ -389,6 +394,11 @@ function message(type, close){
             msjDesc.innerHTML = 'Ups! Hubo un error y no pudimos cargar tu comentario. Por favor intentalo de nuevo.'
             break;
 
+        case 'error.regist':
+            msjTitle.innerHTML = 'A OCURRIDO UN ERROR'
+            msjDesc.innerHTML = 'Ups! Hubo un error y no pudimos registrar tu cuenta. Por favor intentalo de nuevo.'
+            break;
+
         default:
             break;
     }
@@ -413,6 +423,7 @@ function message(type, close){
         }
     }
 }
+// <--
 
 
 if(window.location.href.includes('index')){

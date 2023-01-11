@@ -603,6 +603,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
         float: left;
         z-index: 2;
         clip-path: polygon(0 25%, 50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%);
@@ -614,19 +615,25 @@
             font-family: 'CairoBold';
             font-weight: 700;
             align-self: center;
+            position: relative;
+            top: -1rem;
         }
 
         p {
             color: white;
             width: 32rem;
-            font-size: 1.5rem;
-            font-family: 'CairoBold';
+            font-size: 1.25rem;
+            font-family: 'CairoLight';
             font-weight: 700;
-            margin: 0  2rem;
+            margin: 0  2rem 0.5rem 2rem;
+            position: relative;
+            top: -1rem;
         }
 
         .btn {
             align-self: center;
+            position: relative;
+            top: -1rem;
         }
     }
 

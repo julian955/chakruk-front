@@ -947,6 +947,9 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   float: left;
   z-index: 2;
   -webkit-clip-path: polygon(0 25%, 50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%);
@@ -962,21 +965,27 @@
   -ms-flex-item-align: center;
       -ms-grid-row-align: center;
       align-self: center;
+  position: relative;
+  top: -1rem;
 }
 
 .combosPrev__divText p {
   color: white;
   width: 32rem;
-  font-size: 1.5rem;
-  font-family: 'CairoBold';
+  font-size: 1.25rem;
+  font-family: 'CairoLight';
   font-weight: 700;
-  margin: 0  2rem;
+  margin: 0  2rem 0.5rem 2rem;
+  position: relative;
+  top: -1rem;
 }
 
 .combosPrev__divText .btn {
   -ms-flex-item-align: center;
       -ms-grid-row-align: center;
       align-self: center;
+  position: relative;
+  top: -1rem;
 }
 
 .combosPrev__combos {
@@ -3258,11 +3267,12 @@
   -ms-flex-pack: distribute;
       justify-content: space-around;
   margin-top: 2rem;
+  position: relative;
 }
 
 .comment__actions div {
   width: 4rem;
-  height: 100%;
+  height: 2rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -3270,6 +3280,7 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
+  overflow: visible;
 }
 
 .comment__actions div p {
@@ -3414,6 +3425,7 @@
   -ms-flex-pack: distribute;
       justify-content: space-around;
   margin-top: 2rem;
+  position: relative;
 }
 
 .reply__actions div {
@@ -3438,6 +3450,36 @@
 .reply__actions div img {
   max-width: 40%;
   max-height: 80%;
+}
+
+.likeList {
+  display: none;
+  width: 10rem;
+  max-height: 10rem;
+  list-style: none;
+  background-color: rgba(32, 32, 32, 0.98);
+  position: absolute;
+  top: 2rem;
+  left: 0rem;
+  border-radius: 0.5rem;
+  -webkit-box-shadow: 0 0 0.25rem 0.25rem #414040;
+          box-shadow: 0 0 0.25rem 0.25rem #414040;
+  z-index: 2;
+  overflow: scroll;
+}
+
+.likeList li {
+  width: 10rem;
+  margin-left: 0.5rem;
+  color: white;
+  font-family: 'CairoLight';
+  font-size: 1.12rem;
+}
+
+.likeList::-webkit-scrollbar {
+  display: none;
+  position: relative;
+  left: 10rem;
 }
 
 * {

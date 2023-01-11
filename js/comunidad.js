@@ -74,7 +74,8 @@ import {getUser, message} from './global.js'
 
 const baseUrl = 'https://chakruk-production.up.railway.app/'
 
-sessionStorage.setItem('chacrukCommentsPage', 1)
+sessionStorage.setItem('chacrukCommentsByTimePage', 1)
+sessionStorage.setItem('chacrukCommentsByPopularPage', 1)
 const sectionDiv = document.querySelector('.sections')
 
 if(sessionStorage.getItem('chacrukCommentId') === null){
@@ -164,7 +165,7 @@ const recent = document.getElementById('comments__recent')
 const popular = document.getElementById('comments__popular')
 
 document.getElementById('moreComment').onclick = () => {
-    getCommentsByTimestamp()
+    getCommentsByTime()
 }
 
 function showComments(comments, container) {
@@ -290,11 +291,11 @@ function getDate(time){
     return date[2] + '/' + date[1] + '/' + date[0] + ' ' + (clock[0][0] == 0 ? clock[0][1] : clock[0]) + ':' + clock[1]
 }
 
-async function getCommentsByTimestamp() {
+async function getCommentsByTime() {
     let url
     
-    if(JSON.parse(sessionStorage.getItem('chacrukCommentsPage')) !== 1){
-        url = baseUrl + 'comments?page=' + JSON.parse(sessionStorage.getItem('chacrukCommentsPage'))
+    if(JSON.parse(sessionStorage.getItem('chacrukCommentsByTimePage')) !== 1){
+        url = baseUrl + 'comments?page=' + JSON.parse(sessionStorage.getItem('chacrukCommentsByTimePage'))
     }else {
         url = baseUrl + 'comments'
     }
@@ -319,7 +320,43 @@ async function getCommentsByTimestamp() {
                     openComment(parseInt(sessionStorage.getItem('chacrukCommentId')))
                 } else {
                     showComments(data.list, recent)
-                    sessionStorage.setItem('chacrukCommentsPage', JSON.parse(sessionStorage.getItem('chacrukCommentsPage')) + 1)
+                    sessionStorage.setItem('chacrukCommentsByTimePage', JSON.parse(sessionStorage.getItem('chacrukCommentsByTimePage')) + 1)
+                }
+            })
+        }        
+    });
+}
+
+async function getCommentsByPopular() {
+    let url
+    
+    if(JSON.parse(sessionStorage.getItem('chacrukCommentsByTimePage')) !== 1){
+        url = baseUrl + 'comments/popular' + JSON.parse(sessionStorage.getItem('chacrukCommentsByTimePage'))
+    }else {
+        url = baseUrl + 'comments/popular'
+    }
+
+    await fetch(url, {
+        method: "GET",
+        modo: "*cors",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Access-Control-Allow-Origin": "*",
+            "Accept": "*/*",
+            "Authorization": sessionStorage.getItem('chacrukToken')
+        }
+    })
+    .then((response) => {    
+        console.log(response); 
+        if(response.status === 200){
+            response.json()
+            .then((data) => {
+                console.log(data);
+                if(parseInt(sessionStorage.getItem('chacrukCommentId')) !== -1 && commentOpened === false){
+                    openComment(parseInt(sessionStorage.getItem('chacrukCommentId')))
+                } else {
+                    showComments(data.list, popular)
+                    sessionStorage.setItem('chacrukCommentsByTimePage', JSON.parse(sessionStorage.getItem('chacrukCommentsByTimePage')) + 1)
                 }
             })
         }        
@@ -486,6 +523,28 @@ function openComment(commentData){
     like.appendChild(likeImg)
     like.appendChild(likeNo)
 
+    ////////////////////////////////////
+    const likeList = document.createElement('ul')
+    likeList.className = 'likeList'
+    
+    like.appendChild(likeList)
+
+    for(let i = 0; i < commentData.usersLike.length; i++){
+        const likeUser = document.createElement('li')
+        likeUser.innerHTML = commentData.usersLike[i]
+
+        likeList.appendChild(likeUser)
+    }
+
+    like.onmouseover = () => {
+        likeList.style.display = 'block'
+    }
+
+    like.onmouseleave = () => {
+        likeList.style.display = 'none'
+    }
+    ////////////////////////////////////
+
     const reply = document.createElement('div')
     reply.className = 'replyIcon'
     reply.id = 'reply-' + commentData.id
@@ -636,7 +695,21 @@ function openComment(commentData){
                 likeImg.src = './../img/likeIcon.png'
                 likeNo.style.color = 'white'
             }
+
+            const likeList = document.createElement('ul')
+            likeList.className = 'likeList'
+
+            for(let j = 0; j < commentData.reply[i].usersLike.length; j++){
+                const likeUser = document.createElement('li')
+                likeUser.className = 'liUser'                
+                likeUser.innerHTML = commentData.reply[i].usersLike[j]
+
+                likeList.appendChild(likeUser)
+            }
+
             like.appendChild(likeImg)
+            like.appendChild(likeNo)
+            like.appendChild(likeList)
 
             like.onclick = () => {
                 console.log(likeImg.src);
@@ -644,16 +717,38 @@ function openComment(commentData){
                     likeImg.src = './../img/likeIconOn.png'  
                     likeNo.innerHTML = parseInt(likeNo.innerHTML) + 1  
                     likeNo.style.color = '#D251FF'
+
+                    const newLike = document.createElement('li')
+                    newLike.className = 'liUser'
+                    newLike.innerHTML = sessionStorage.getItem('chakrukUser')
+
+                    likeList.appendChild(newLike)
                 } else {
                     likeImg.src = './../img/likeIcon.png'
                     likeNo.innerHTML = parseInt(likeNo.innerHTML) - 1
                     likeNo.style.color = 'white'
+
+                    const li = document.getElementsByClassName('liUser')
+                    console.log(li);
+                    for(let k = 0; k < li.length; k++){
+                        console.log(li[k].innerHTML);
+                        if(li[k].innerHTML === sessionStorage.getItem('chakrukUser')){
+                            console.log(sessionStorage.getItem('chakrukUser'));
+                            li[k].remove()
+                        }
+                    }
                 }
 
                 makeLike('reply', commentData.reply[i].id)
+            }                        
+
+            like.onmouseover = () => {
+                likeList.style.display = 'block'
             }
 
-            like.appendChild(likeNo)
+            like.onmouseleave = () => {
+                likeList.style.display = 'none'
+            }
 
             const reply = document.createElement('div')
             reply.className = 'replyIcon'
@@ -847,4 +942,5 @@ function makeLike(element, id){
 }
 
 
-getCommentsByTimestamp()
+getCommentsByTime()
+getCommentsByPopular()
